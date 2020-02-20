@@ -4,30 +4,28 @@ import InterviewerList from "components/InterviewerList";
 import Button from "components/Button";
 
 export default function Form(props) {
+  console.log(props)
   const [name, setName] = useState(props.name || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
-  
   const reset = () => {
     setName('');
     setInterviewer(null);
   }
-
   const cancel = () => {
     reset();
     props.onCancel();
   }
  
-
-
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
         <form autoComplete="off"  onSubmit={event => event.preventDefault()}>
           <input
             className="appointment__create-input text--semi-bold"
-            name= {name}
+            name='name'
+            value= {name}
             type="text"
-            placeholder= {props.interviewer === null ? "Enter Student Name" : props.name}
+            placeholder= "Enter Student Name"
             onChange={(name) => setName(name.target.value)}
            
           />

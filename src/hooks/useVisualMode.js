@@ -8,13 +8,11 @@ export default function useVisualMode(initial) {
   // console.log(mode, history);
   function transition (mode, replace = false) {
     if (replace) {
-      const copy = [...history];
-      copy.pop();
       setMode(mode);
-      setHistory([...copy, mode]);
+      setHistory(prev => [...prev.slice(0, prev.length - 1), mode]);
     } else {
       setMode(mode);
-      setHistory([ ...history, mode]);
+      setHistory(prev => [ ...prev, mode]);
     }
   }
 
