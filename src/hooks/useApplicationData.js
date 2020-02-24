@@ -1,18 +1,38 @@
 import { useReducer, useEffect } from "react";
 import axios from "axios";
 
+import { getAppointmentsForDay } from "helpers/selectors";
+
 const SET_DAY = "SET_DAY";
 const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 const SET_INTERVIEW = "SET_INTERVIEW";
 
+function getSpotsForDay (state, day) {
+  const openSpots = getAppointmentsForDay(state, day).filter(appt => appt.interview === null)
+  return openSpots.length;
+}
+
 function reducer(state, action) {
+  
   switch (action.type) {
     case SET_DAY:
       return { ...state, day: action.day}
     case SET_APPLICATION_DATA:
       return action.appData
     case SET_INTERVIEW: {
-      return { ...state, appointments: action.appointments}
+      const day = state.day
+      let openSpots = getSpotsForDay(state, day);
+      const count = (action.value.on === 'book') ? -1 : 1;
+      openSpots += count;
+
+      const newDays = [...state.days].map(data => {
+        if (data.name === day) {
+          data = { ...data, spots: openSpots };
+        }
+        return data;
+      });
+  
+      return { ...state, appointments: action.value.appointments, days: newDays};
     }
     default:
       throw new Error(
@@ -37,7 +57,7 @@ export default function useApplicationData() {
     const appointments = {...state.appointments, [id]: appointment};
 
     return axios.put(`/api/appointments/${id}`, {interview}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, appointments: appointments });
+      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments , on: 'book', id: id }});
     });
   }
 
@@ -46,7 +66,7 @@ export default function useApplicationData() {
     const appointments = {...state.appointments, [id]: appointment};
 
     return axios.delete(`/api/appointments/${id}`, {id}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, appointments: appointments });
+      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments, on: 'cancel', id: id}})
     })
   }
 
