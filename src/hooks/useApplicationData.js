@@ -22,7 +22,7 @@ function reducer(state, action) {
     case SET_INTERVIEW: {
       const day = state.day
       let openSpots = getSpotsForDay(state, day);
-      const count = (action.value.on === 'book') ? -1 : 1;
+      const count = (action.value.on === 'add') ? -1 : (action.value.on === 'edit') ? 0 : 1;
       openSpots += count;
       const newDays = [...state.days].map(data => {
         if (data.name === day) {
@@ -52,11 +52,16 @@ export default function useApplicationData() {
   const setDay = day => dispatch({ type: SET_DAY, day: day });
 
   function bookInterview(id, interview) {
+    console.log(state.appointments[id].interview === null)
+    let editSpots = 'edit';
+    if(state.appointments[id].interview === null) {
+      editSpots = 'add';
+    }
     const appointment = {...state.appointments[id], interview: { ...interview }};
     const appointments = {...state.appointments, [id]: appointment};
 
     return axios.put(`/api/appointments/${id}`, {interview}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments , on: 'book', id: id }});
+      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments , on: editSpots, id: id }});
     });
   }
 
@@ -65,7 +70,7 @@ export default function useApplicationData() {
     const appointments = {...state.appointments, [id]: appointment};
 
     return axios.delete(`/api/appointments/${id}`, {id}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments, on: 'cancel', id: id}})
+      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments, on: 'delete', id: id}})
     })
   }
 
