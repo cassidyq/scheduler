@@ -52,7 +52,6 @@ export default function useApplicationData() {
   const setDay = day => dispatch({ type: SET_DAY, day: day });
 
   function bookInterview(id, interview) {
-    console.log(state.appointments[id].interview === null)
     let editSpots = 'edit';
     if(state.appointments[id].interview === null) {
       editSpots = 'add';
