@@ -18,7 +18,7 @@ function reducer(state, action) {
     case SET_DAY:
       return { ...state, day: action.day}
     case SET_APPLICATION_DATA:
-      return action.appData
+      return {...state, ...action.value}
     case SET_INTERVIEW: {
       const day = state.day
       let openSpots = getSpotsForDay(state, day);
@@ -72,10 +72,10 @@ export default function useApplicationData() {
   useEffect(() => {
     const getDays = axios.get("/api/days");
     const getAppointments = axios.get("/api/appointments");
-    const getInterviewers = axios.get("/api/interviewers")
+    const getInterviewers = axios.get("/api/interviewers");
     
     Promise.all([ getDays, getAppointments, getInterviewers ]).then((all) => {
-      dispatch({ type: SET_APPLICATION_DATA, appData: {days: all[0].data, appointments: all[1].data, interviewers: all[2].data}});
+      dispatch({ type: SET_APPLICATION_DATA, value: {days: all[0].data, appointments: all[1].data, interviewers: all[2].data}});
     })
      
   }, []);

@@ -2,13 +2,12 @@ import React from "react";
 
 import "components/Application.scss";
 import DayList from "components/DayList";
-import 'components/Appointment';
 import Appointment from "components/Appointment";
 import useApplicationData from "hooks/useApplicationData";
 import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
 
-export default function Application(props) {
-  const { state, setDay, setSpots, bookInterview, cancelInterview } = useApplicationData();
+export default function Application() {
+  const { state, setDay, bookInterview, cancelInterview } = useApplicationData();
   const interviewers = getInterviewersForDay(state, state.day);
 
   const appointments = getAppointmentsForDay(state, state.day).map((appointment) => {
@@ -37,7 +36,6 @@ export default function Application(props) {
         <DayList
           days={state.days}
           day= {state.day}
-          spots={setSpots}
           setDay={setDay}
         />
       </nav>
