@@ -24,7 +24,6 @@ function reducer(state, action) {
       let openSpots = getSpotsForDay(state, day);
       const count = (action.value.on === 'book') ? -1 : 1;
       openSpots += count;
-
       const newDays = [...state.days].map(data => {
         if (data.name === day) {
           data = { ...data, spots: openSpots };
