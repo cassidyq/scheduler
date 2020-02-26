@@ -19,20 +19,16 @@ export default function useApplicationData() {
     if(state.appointments[id].interview === null) {
       editSpots = 'add';
     }
-    const appointment = {...state.appointments[id], interview: { ...interview }};
-    const appointments = {...state.appointments, [id]: appointment};
 
     return axios.put(`/api/appointments/${id}`, {interview}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments , on: editSpots, id: id }});
+      dispatch({ type: SET_INTERVIEW, value: { interview: { ...interview }, spots: editSpots, id: id }});
     });
   }
 
   function cancelInterview(id) {
-    const appointment = {...state.appointments[id], interview: null };
-    const appointments = {...state.appointments, [id]: appointment};
 
     return axios.delete(`/api/appointments/${id}`, {id}).then((response) => {
-      dispatch({ type: SET_INTERVIEW, value: { appointments: appointments, on: 'delete', id: id}})
+      dispatch({ type: SET_INTERVIEW, value: { interview: null, spots: 'delete', id: id}})
     })
   }
 
